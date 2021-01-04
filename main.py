@@ -21,6 +21,9 @@ screen = pygame.display.set_mode([SCREEN_WIDHT, SCREEN_WIDHT])
 
 running = True
 
+# Adding background color
+screen.fill(("#0273f8"))
+
 # Main Loop
 while running:
 
@@ -32,3 +35,5 @@ while running:
 
         if event.type == QUIT:
             running = False
+
+    pygame.display.flip()
