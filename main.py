@@ -1,5 +1,6 @@
 import pygame
 from player import *
+from enemy import *
 
 from pygame.locals import (
     K_UP,
@@ -12,16 +13,26 @@ from pygame.locals import (
 )
 
 from settings import *
-
 pygame.init()
 
 # Setting up the screen
 screen = pygame.display.set_mode([SCREEN_WIDHT, SCREEN_HEIGHT])
 
+# Creating a custom event for adding a new enemy
+ADDENEMY = pygame.USEREVENT + 1
+pygame.time.set_timer(ADDENEMY, 250)
+
 running = True
+
+# Clock
+clock = pygame.time.Clock()
 
 # Creating a new player
 player = Player()
+
+enemies = pygame.sprite.Group()
+all_sprites = pygame.sprite.Group()
+all_sprites.add(player)
 
 # Main Loop
 while running:
@@ -32,6 +43,11 @@ while running:
             if event.key == K_ESCAPE:
                 running = False
 
+        # Adding new enemy?
+        if event.type == ADDENEMY:
+            new_enemy = Enemy()
+            enemies.add(new_enemy)
+            all_sprites.add(new_enemy)
         if event.type == QUIT:
             running = False
 
@@ -41,7 +57,16 @@ while running:
     pressed_keys = pygame.key.get_pressed()
     player.update(pressed_keys)
 
-    # Draw the player on the screen
-    screen.blit(player.surf, player.rect)
+    enemies.update()
+
+    # Draw all sprites
+    for sprite in all_sprites:
+        screen.blit(sprite.surf, sprite.rect)
+
+    # Check if any enemies have collided witht he player
+    if pygame.sprite.spritecollideany(player, enemies):
+        player.kill()
+        running = False
 
     pygame.display.flip()
+    clock.tick(60)
