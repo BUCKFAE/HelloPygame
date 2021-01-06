@@ -1,4 +1,5 @@
 import pygame
+from player import *
 
 from pygame.locals import (
     K_UP,
@@ -10,19 +11,17 @@ from pygame.locals import (
     QUIT
 )
 
+from settings import *
+
 pygame.init()
 
-# Define constants for the screen width and height
-SCREEN_WIDHT = 800
-SCREEN_HEIGHT = 600
-
 # Setting up the screen
-screen = pygame.display.set_mode([SCREEN_WIDHT, SCREEN_WIDHT])
+screen = pygame.display.set_mode([SCREEN_WIDHT, SCREEN_HEIGHT])
 
 running = True
 
-# Adding background color
-screen.fill(("#0273f8"))
+# Creating a new player
+player = Player()
 
 # Main Loop
 while running:
@@ -35,5 +34,14 @@ while running:
 
         if event.type == QUIT:
             running = False
+
+    screen.fill(("#0273f8"))
+
+
+    pressed_keys = pygame.key.get_pressed()
+    player.update(pressed_keys)
+
+    # Draw the player on the screen
+    screen.blit(player.surf, player.rect)
 
     pygame.display.flip()
